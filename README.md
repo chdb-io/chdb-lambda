@@ -36,13 +36,15 @@ $ ./deploy.sh
 
 <img src="https://images.ctfassets.net/o7xu9whrs0u9/5XE0x5uBoOA4oJYZFwzNea/79493c8495c8d60c726cfeeae73a2b84/create_function.png" align="left">
 
-<br>
+<br><br>
+
 ➡ Choose **Container Image** and use the **chDB ECR** instance URI you created
 
 <img src="https://user-images.githubusercontent.com/1423657/250210923-887894c3-35ef-4083-a4b8-29d247f1fc1c.png" align="left">
 
 
-<br>
+<br><br>
+
 ➡ Click **Create Function** at the bottom right when you’re done.
 
 <br>
