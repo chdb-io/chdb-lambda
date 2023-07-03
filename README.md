@@ -65,14 +65,11 @@ And the response would look like this (or any other format)
 22.12.1.1
 ```
 
-
-
-----
-
-This guide is loosely based on [this reference article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
-
-
 You can also use the Browser and the AWS Console to generate **test events**:
 
 <img src="https://user-images.githubusercontent.com/1423657/250201531-daa26b0b-68e2-4cec-b665-5505efe99b99.png" align="left">
 
+
+-----
+
+This guide is loosely based on [this reference article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
