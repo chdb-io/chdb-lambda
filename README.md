@@ -10,12 +10,11 @@ This guide is based on [this article](https://medium.com/@skalyani103/python-on-
 
 ## Create an AWS Lambda Function for chDB
 
-To create an AWS Lambda function, log into your AWS console.
-
 ➡ **Build & Push** the latest [chDB-lambda container](https://github.com/chdb-io/chdb-server/tree/main/lambda) image to your **ECR** storage.
 
 ### Upload Docker image on ECR and Lambda
-Lambda function continers must be hosted on the AWS Elastic Container Registry.
+Lambda function continers must be hosted on the AWS Elastic Container Registry.<br>
+Before proceeding authenticate into your AWS console.
 
 1. Export your AWS account id in the shell or better yet, add it your ~/.bashrc or ~/.bash_profile 
 ```
