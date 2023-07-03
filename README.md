@@ -1,10 +1,9 @@
 <img src="https://github.com/chdb-io/chdb/raw/pybind/docs/_static/snake-chdb.png" width=320 >
 
-# chDB on AWS Lambda
+# chDB AWS Lambda
 
-> Running chdb in a lambda function for fun a profit!
+> Running chdb in a lambda container function for fun a profit!
 
-This guide is based on [this article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
 
 
 
@@ -65,6 +64,13 @@ And the response would look like this (or any other format)
 ```plaintext
 22.12.1.1
 ```
+
+
+
+----
+
+This guide is loosely based on [this reference article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
+
 
 You can also use the Browser and the AWS Console to generate **test events**:
 
