@@ -1,8 +1,11 @@
+<img src="https://github.com/chdb-io/chdb/raw/pybind/docs/_static/snake-chdb.png" width=320 >
+
 # chDB on AWS Lambda
 
 > Running chdb in a lambda function for fun a profit!
 
 This guide is based on [this article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
+
 
 ## Upload Docker image on ECR and Lambda
 Lambda function continers must be hosted on the AWS Elastic Container Registry.
