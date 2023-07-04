@@ -82,4 +82,6 @@ You can also use the Browser and the AWS Console to generate **test events**:
 
 -----
 
+<br>
+
 This guide is loosely based on [this reference article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
