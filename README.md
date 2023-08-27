@@ -1,4 +1,4 @@
-<img src="https://github.com/chdb-io/chdb/raw/pybind/docs/_static/snake-chdb.png" width=320 >
+<img src="https://avatars.githubusercontent.com/u/132536224" width=300 >
 
 # chDB AWS Lambda
 
