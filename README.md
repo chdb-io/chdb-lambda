@@ -11,7 +11,7 @@ This sample shows how to run the chdb OLAP engine in an AWS Lambda function to e
 
 ## Create an AWS Lambda Function for chDB
 
-➡ **Build & Push** the latest [chDB-lambda container](https://github.com/chdb-io/chdb-server/tree/main/lambda) image to your **ECR** storage.
+➡ **Build & Push** the latest [chDB-lambda container](https://github.com/chdb-io/chdb-lambda/pkgs/container/chdb-lambda) image to your **ECR** storage.
 
 ### Upload Docker image on ECR and Lambda
 Lambda function continers must be hosted on the AWS Elastic Container Registry.<br>
