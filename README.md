@@ -1,10 +1,12 @@
 <img src="https://avatars.githubusercontent.com/u/132536224" width=300 >
 
-# chDB AWS Lambda
+# chDB in AWS Lambda
 
-> Running chdb in a lambda container function for fun a profit!
+> Running chdb in a lambda container function 
 
+This sample shows how to run the chdb OLAP engine in an AWS Lambda function to enable ad-hoc querying of any cloud dataset with ClickHouse SQL using a simple HTTP client, without the need to run or deploy a ClickHouse cluster or dedicated cloud service.
 
+![image](https://github.com/chdb-io/chdb-lambda/assets/1423657/a5484b39-9aa7-4c35-a55c-be6329a30ace)
 
 
 ## Create an AWS Lambda Function for chDB
@@ -57,21 +59,19 @@ $ ./deploy.sh
 
 Let's **test** our new **chDB Lambda** using a *simple query.*
 
-The Lamba expects JSON requests with a **query** key:
+The Lamba expects JSON POST requests with a **query** key:
 
 
 ```bash
-curl -XPOST "http://{lambda_url}/2015-03-31/functions/function/invocations" -d 
-{
-   'query': 'SELECT version()',
-   'default_format': 'CSV'
-}
+curl -XPOST "http://{lambda_url}/query" \
+  --header 'Content-Type: application/json'
+  --data '{"query": "SELECT version()", "default_format": "CSV"}'
 ```
 
 And the response would look like this (or any other format)
 
 ```plaintext
-22.12.1.1
+23.6.1.1
 ```
 
 You can also use the Browser and the AWS Console to generate **test events**:
@@ -80,8 +80,7 @@ You can also use the Browser and the AWS Console to generate **test events**:
 
 <br>
 
------
-
 <br>
 
-This guide is loosely based on [this reference article](https://medium.com/@skalyani103/python-on-aws-lambda-using-docker-images-5740664c54ca)
+-----
+
