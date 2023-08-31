@@ -6,7 +6,7 @@
 
 This sample shows how to run the chdb OLAP engine in an AWS Lambda function to enable ad-hoc querying of any cloud dataset with ClickHouse SQL using a simple HTTP client, without the need to run or deploy a ClickHouse cluster or dedicated cloud service.
 
-![image](https://github.com/chdb-io/chdb-lambda/assets/1423657/a5484b39-9aa7-4c35-a55c-be6329a30ace)
+![chdb-lambda)](https://github.com/chdb-io/chdb-lambda/assets/1423657/0d6f9cf9-f8ad-47d9-95ea-638d2170335a)
 
 
 ## Create an AWS Lambda Function for chDB
