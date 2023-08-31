@@ -1,12 +1,22 @@
-FROM public.ecr.aws/lambda/python:latest
+ARG FUNCTION_DIR="/function"
 
-COPY requirements.txt ./
-COPY lambda.py ./
+FROM python:3.11 as build-image
 
-RUN python3 -m pip install -r requirements.txt
+ARG FUNCTION_DIR
 
-ENV AWS_ACCESS_KEY_ID 000
-ENV AWS_SECRET_ACCESS_KEY 000
-ENV AWS_SESSION_TOKEN 000
+RUN mkdir -p ${FUNCTION_DIR}
+COPY lambda.py ${FUNCTION_DIR}
+COPY requirements.txt ${FUNCTION_DIR}
 
-CMD ["lambda.lambda_handler"]
+RUN pip install --target ${FUNCTION_DIR} -r "${FUNCTION_DIR}/requirements.txt"
+RUN pip install --target ${FUNCTION_DIR} awslambdaric
+
+FROM python:3.11-slim
+
+ARG FUNCTION_DIR
+WORKDIR ${FUNCTION_DIR}
+
+COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
+
+ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
+CMD [ "lambda.handler" ]
