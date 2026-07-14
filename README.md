@@ -1,86 +1,60 @@
-<img src="https://avatars.githubusercontent.com/u/132536224" width=300 >
+# chdb-serverless
 
-# chDB in AWS Lambda
+Run a [chDB](https://github.com/chdb-io/chdb) (in-process ClickHouse) analyst
+on serverless — **one app and one image** across AWS Lambda, Google Cloud
+Run, and Azure Container Apps, with two plug seams that keep the core
+unchanged as you grow:
 
-> Running chdb in a lambda container function 
+- **store seam** — `local:` (this package, L1) → `durable:` (S3-backed object, L2) → `memory:` (analytical agent memory, L3), chosen by `CHDB_STORE`;
+- **model seam** — Anthropic / OpenAI / any OpenAI-compatible server, chosen by `CHDB_MODEL`, so the analyst is not anchored to one LLM.
 
-This sample shows how to run the chdb OLAP engine in an AWS Lambda function to enable ad-hoc querying of any cloud dataset with ClickHouse SQL using a simple HTTP client, without the need to run or deploy a ClickHouse cluster or dedicated cloud service.
+> This repo is the base. The walkthroughs — why in-process, the cold-start
+> comparison across clouds, the tier ladder — live in the
+> [chDB cookbook serverless series](https://github.com/chdb-io/cookbook/tree/main/serverless-analyst).
+> Heritage: this repo pioneered chDB-on-Lambda in 2023 (thanks @lmangani);
+> the maintained, multi-cloud version is here.
 
-![chdb-lambda)](https://github.com/chdb-io/chdb-lambda/assets/1423657/0d6f9cf9-f8ad-47d9-95ea-638d2170335a)
-
-
-## Create an AWS Lambda Function for chDB
-
-➡ **Build & Push** the latest [chDB-lambda container](https://github.com/chdb-io/chdb-lambda/pkgs/container/chdb-lambda) image to your **ECR** storage.
-
-### Upload Docker image on ECR and Lambda
-Lambda function continers must be hosted on the AWS Elastic Container Registry.<br>
-Before proceeding authenticate into your AWS console.
-
-1. Export your AWS account id in the shell or better yet, add it your ~/.bashrc or ~/.bash_profile 
-```
-$ export AWS_ACCOUNT_ID = <account_id>
-```
-
-2. Install the AWS CLI and configure with your AWS credentials
-```
-$ aws configure
-```
-
-3. Review and execute the ‘deploy.sh’ script:
-```
-$ ./deploy.sh
-```
-
-
-
-➡ Search for **AWS Lambda** and select the service. Then, click **Create Function**.
-
-<img src="https://images.ctfassets.net/o7xu9whrs0u9/5XE0x5uBoOA4oJYZFwzNea/79493c8495c8d60c726cfeeae73a2b84/create_function.png" align="left">
-
-<br>
-
-<br>
-
-➡ Choose **Container Image** and use the **chDB ECR** instance URI you created
-
-<img src="https://user-images.githubusercontent.com/1423657/250210923-887894c3-35ef-4083-a4b8-29d247f1fc1c.png" align="left">
-
-
-<br>
-
-<br>
-
-➡ Click **Create Function** at the bottom right when you’re done.
-
-<br>
-
-### Validation
-
-Let's **test** our new **chDB Lambda** using a *simple query.*
-
-The Lamba expects JSON POST requests with a **query** key:
-
+## Use as a template (clone and deploy)
 
 ```bash
-curl -XPOST "http://{lambda_url}/query" \
-  --header 'Content-Type: application/json'
-  --data '{"query": "SELECT version()", "default_format": "CSV"}'
+git clone https://github.com/chdb-io/chdb-lambda
+cd chdb-lambda
+export ANTHROPIC_API_KEY=sk-...        # optional — omit for /query only
+deploy/aws-lambda/deploy.sh            # or gcp-cloud-run/ or azure-container-apps/
 ```
 
-And the response would look like this (or any other format)
+**Auth posture (read before deploying):** `/query` runs caller-supplied
+ClickHouse SQL and `/ask` spends model tokens, so every lane deploys
+**non-public by default** — AWS Lambda uses an `AWS_IAM` Function URL, and
+Cloud Run / Container Apps use private ingress. Set `PUBLIC=1` to opt into an
+unauthenticated endpoint for a throwaway demo, and put your own auth in front
+before exposing anything real.
 
-```plaintext
-23.6.1.1
+## Use as a package (import, don't copy)
+
+```bash
+pip install chdb-serverless[anthropic]   # or [openai]
 ```
 
-You can also use the Browser and the AWS Console to generate **test events**:
+```python
+from chdb_serverless import analyst_app, open_store
+app = analyst_app()          # FastAPI: /health /query /ask
+store = open_store()         # CHDB_STORE selects the tier
+```
 
-<img src="https://user-images.githubusercontent.com/1423657/250201531-daa26b0b-68e2-4cec-b665-5505efe99b99.png" align="left">
+## Seams
 
-<br>
+| Env | Values | Meaning |
+|---|---|---|
+| `CHDB_STORE` | `local:/path` · `durable:s3://…` · `memory:s3://…` | which tier (L1 now; L2/L3 via extras) |
+| `CHDB_MODEL` | `anthropic:claude-opus-4-8` · `openai:gpt-4.1` · `openai:llama3@http://host/v1` | which LLM (any OpenAI-compatible server via `@base_url`) |
 
-<br>
+Extras: `[anthropic]` `[openai]` (LLM providers), `[durable]` (L2), `[memory]` (L3).
 
------
+## Layout
 
+```
+src/chdb_serverless/   app: server.py (/health /query /ask), agent.py, store.py, models/
+Dockerfile             one image; bakes the dataset; carries the Lambda Web Adapter (inert off Lambda)
+deploy/                per-cloud deploy.sh + teardown.sh (aws-lambda / gcp-cloud-run / azure-container-apps)
+```

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chdb-serverless"
+version = "0.1.0"
+description = "Run a chDB (in-process ClickHouse) analyst on serverless — one app and image across AWS Lambda, Cloud Run, and Azure Container Apps, with a store seam that carries it to durable and memory tiers."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{ name = "chDB" }]
+keywords = ["chdb", "clickhouse", "serverless", "lambda", "cloud-run", "container-apps", "agent"]
+dependencies = [
+    "chdb>=4.2",
+    "fastapi",
+    "uvicorn",
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+# LLM providers for the /ask endpoint (raw /query needs none). Pick one;
+# CHDB_MODEL selects it at runtime (anthropic:… / openai:…@base_url).
+anthropic = ["anthropic"]
+openai = ["openai"]
+agent = ["anthropic"]  # convenience alias: the default provider
+# L2: durable per-user analysts as objects on S3-compatible storage
+durable = ["chdb[durable]"]
+# L3: analytical agent-memory layer on top of the durable object
+memory = ["chdb-memory"]
+
+[project.scripts]
+chdb-serverless = "chdb_serverless.server:main"
+
+[project.urls]
+Homepage = "https://github.com/chdb-io/chdb-lambda"
+Cookbook = "https://github.com/chdb-io/cookbook/tree/main/serverless-analyst"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chdb_serverless"]
