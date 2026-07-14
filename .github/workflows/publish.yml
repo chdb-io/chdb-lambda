@@ -1,0 +1,26 @@
+# Publish chdb-serverless to PyPI on a version tag, via PyPI Trusted
+# Publishing (OIDC) — no stored token. One-time setup on PyPI: add a
+# "pending publisher" for project `chdb-serverless` pointing at this repo
+# (chdb-io/chdb-lambda), workflow `publish.yml`, environment `pypi`.
+name: publish
+
+on:
+  push:
+    tags: ["v*"]        # e.g. v0.1.0
+  workflow_dispatch: {}
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - run: python -m build
+      - run: pip install twine && twine check dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1
