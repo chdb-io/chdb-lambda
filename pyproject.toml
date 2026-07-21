@@ -24,7 +24,9 @@ dependencies = [
 anthropic = ["anthropic"]
 openai = ["openai"]
 agent = ["anthropic"]  # convenience alias: the default provider
-# L2: durable per-user analysts as objects on S3-compatible storage
+# L2: durable per-user analysts as objects on S3-compatible storage.
+# The DAO primitive ships as chdb.durable (subpackage of the main chdb package);
+# chdb[durable] pulls its S3 backend deps.
 durable = ["chdb[durable]"]
 # L3: analytical agent-memory layer on top of the durable object
 memory = ["chdb-memory"]
